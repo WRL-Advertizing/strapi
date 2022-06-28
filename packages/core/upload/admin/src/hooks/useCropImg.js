@@ -7,7 +7,7 @@ export const useCropImg = () => {
   const cropperRef = useRef();
   const [isCropping, setIsCropping] = useState(false);
   const [size, setSize] = useState({ width: undefined, height: undefined });
-
+  const [rotate, setRotate] = useState(0);
   useEffect(() => {
     return () => {
       if (cropperRef.current) {
@@ -32,12 +32,19 @@ export const useCropImg = () => {
         zoomable: false,
         cropBoxResizable: true,
         background: false,
+        rotatable: true,
         crop: handleResize,
       });
 
       setIsCropping(true);
     }
   };
+
+  useEffect(() => {
+    if (cropperRef.current && cropperRef.current.rotate) {
+      cropperRef.current.rotateTo(rotate);
+    }
+  }, [rotate]);
 
   const stopCropping = () => {
     if (cropperRef.current) {
@@ -79,6 +86,7 @@ export const useCropImg = () => {
     stopCropping,
     isCropping,
     isCropperReady: Boolean(cropperRef.current),
+    setRotate,
     ...size,
   };
 };

@@ -55,6 +55,7 @@ export const PreviewBox = ({
     isCropperReady,
     width,
     height,
+    setRotate,
   } = useCropImg();
   const { editAsset, error, isLoading, progress, cancel } = useEditAsset();
 
@@ -148,6 +149,7 @@ export const PreviewBox = ({
         {isCropperReady && isInCroppingMode && (
           <CroppingActions
             onValidate={handleCropping}
+            onRotate={setRotate}
             onDuplicate={asset.isLocal ? undefined : handleDuplication}
             onCancel={handleCropCancel}
           />
