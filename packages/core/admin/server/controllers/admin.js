@@ -5,6 +5,7 @@ const execa = require('execa');
 const _ = require('lodash');
 const { exists } = require('fs-extra');
 const { ValidationError } = require('@strapi/utils').errors;
+const { isUsingTypeScript } = require('@strapi/typescript-utils');
 // eslint-disable-next-line node/no-extraneous-require
 const ee = require('@strapi/strapi/lib/utils/ee');
 
@@ -81,10 +82,31 @@ module.exports = {
     return projectSettingsService.updateProjectSettings({ ...body, ...formatedFiles });
   },
 
+  async telemetryProperties(ctx) {
+    // If the telemetry is disabled, ignore the request and return early
+    if (strapi.telemetry.isDisabled) {
+      ctx.status = 204;
+      return;
+    }
+
+    const useTypescriptOnServer = await isUsingTypeScript(strapi.dirs.app.root);
+    const useTypescriptOnAdmin = await isUsingTypeScript(
+      path.join(strapi.dirs.app.root, 'src', 'admin')
+    );
+
+    return {
+      data: {
+        useTypescriptOnServer,
+        useTypescriptOnAdmin,
+      },
+    };
+  },
+
   async information() {
     const currentEnvironment = strapi.config.get('environment');
     const autoReload = strapi.config.get('autoReload', false);
     const strapiVersion = strapi.config.get('info.strapi', null);
+    const dependencies = strapi.config.get('info.dependencies', {});
     const nodeVersion = process.version;
     const communityEdition = !strapi.EE;
     const useYarn = await exists(path.join(process.cwd(), 'yarn.lock'));
@@ -94,6 +116,7 @@ module.exports = {
         currentEnvironment,
         autoReload,
         strapiVersion,
+        dependencies,
         nodeVersion,
         communityEdition,
         useYarn,

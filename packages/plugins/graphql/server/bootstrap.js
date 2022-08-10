@@ -61,6 +61,8 @@ module.exports = async ({ strapi }) => {
         ? ApolloServerPluginLandingPageDisabled()
         : ApolloServerPluginLandingPageGraphQLPlayground(),
     ],
+
+    cache: 'bounded',
   };
 
   const serverConfig = merge(defaultServerConfig, config('apolloServer'));
@@ -109,6 +111,9 @@ module.exports = async ({ strapi }) => {
               type: 'content-api',
             },
           };
+
+          // allow graphql playground to load without authentication
+          if (ctx.request.method === 'GET') return next();
 
           return strapi.auth.authenticate(ctx, next);
         },
