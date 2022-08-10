@@ -126,12 +126,13 @@ const reducer = (state, action) =>
           draftState.shouldCheckErrors = !state.shouldCheckErrors;
         }
 
-        const currentValue = state.modifiedData[dynamicZoneName];
+        const componentPathToMove = ['modifiedData', ...dynamicZoneName.split('.')].join('.');
+        const currentValue = get(draftState, componentPathToMove);
         const nextIndex = action.type === 'MOVE_COMPONENT_UP' ? currentIndex - 1 : currentIndex + 1;
-        const valueToInsert = state.modifiedData[dynamicZoneName][currentIndex];
+        const valueToInsert = currentValue[currentIndex];
         const updatedValue = moveFields(currentValue, currentIndex, nextIndex, valueToInsert);
 
-        set(draftState, ['modifiedData', action.dynamicZoneName], updatedValue);
+        set(draftState, ['modifiedData', ...action.dynamicZoneName.split('.')], updatedValue);
 
         break;
       }
