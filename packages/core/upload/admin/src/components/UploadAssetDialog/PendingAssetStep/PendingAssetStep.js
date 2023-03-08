@@ -1,14 +1,19 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTracking } from '@strapi/helper-plugin';
-import { ModalHeader, ModalBody, ModalFooter } from '@strapi/design-system/ModalLayout';
-import { Typography } from '@strapi/design-system/Typography';
-import { Button } from '@strapi/design-system/Button';
+import {
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Typography,
+  Button,
+  Flex,
+  Stack,
+  Grid,
+  GridItem,
+  KeyboardNavigable,
+} from '@strapi/design-system';
 import { useIntl } from 'react-intl';
-import { Flex } from '@strapi/design-system/Flex';
-import { Stack } from '@strapi/design-system/Stack';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { KeyboardNavigable } from '@strapi/design-system/KeyboardNavigable';
 
 import { AssetCard } from '../../AssetCard/AssetCard';
 import { UploadingAssetCard } from '../../AssetCard/UploadingAssetCard';
@@ -38,7 +43,7 @@ export const PendingAssetStep = ({
   const { trackUsage } = useTracking();
   const [uploadStatus, setUploadStatus] = useState(Status.Idle);
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -122,7 +127,7 @@ export const PendingAssetStep = ({
           </Flex>
           <KeyboardNavigable tagName="article">
             <Grid gap={4}>
-              {assets.map(asset => {
+              {assets.map((asset) => {
                 const assetKey = asset.url;
 
                 if (uploadStatus === Status.Uploading || uploadStatus === Status.Intermediate) {
@@ -134,7 +139,7 @@ export const PendingAssetStep = ({
                         asset={asset}
                         id={assetKey}
                         onCancel={onCancelUpload}
-                        onStatusChange={status => handleStatusChange(status, asset.rawFile)}
+                        onStatusChange={(status) => handleStatusChange(status, asset.rawFile)}
                         size="S"
                         folderId={folderId}
                       />

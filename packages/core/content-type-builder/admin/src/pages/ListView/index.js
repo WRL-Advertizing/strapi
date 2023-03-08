@@ -1,14 +1,7 @@
 import React from 'react';
 import { useTracking, Link } from '@strapi/helper-plugin';
-import Plus from '@strapi/icons/Plus';
-import ArrowLeft from '@strapi/icons/ArrowLeft';
-import Check from '@strapi/icons/Check';
-import Pencil from '@strapi/icons/Pencil';
-import { Button } from '@strapi/design-system/Button';
-import { Flex } from '@strapi/design-system/Flex';
-import { Stack } from '@strapi/design-system/Stack';
-import { Box } from '@strapi/design-system/Box';
-import { ContentLayout, HeaderLayout } from '@strapi/design-system/Layout';
+import { Plus, ArrowLeft, Check, Pencil } from '@strapi/icons';
+import { Button, Flex, Stack, Box, ContentLayout, HeaderLayout } from '@strapi/design-system';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import isEqual from 'lodash/isEqual';
@@ -26,13 +19,8 @@ import LinkToCMSettingsView from './LinkToCMSettingsView';
 /* eslint-disable indent */
 
 const ListView = () => {
-  const {
-    initialData,
-    modifiedData,
-    isInDevelopmentMode,
-    isInContentTypeView,
-    submitData,
-  } = useDataManager();
+  const { initialData, modifiedData, isInDevelopmentMode, isInContentTypeView, submitData } =
+    useDataManager();
   const { formatMessage } = useIntl();
   const { trackUsage } = useTracking();
 
@@ -43,6 +31,7 @@ const ListView = () => {
     onOpenModalAddField,
     onOpenModalEditField,
     onOpenModalEditSchema,
+    onOpenModalEditCustomField,
   } = useFormModalNavigation();
 
   const firstMainDataPath = isInContentTypeView ? 'contentType' : 'component';
@@ -57,21 +46,31 @@ const ListView = () => {
 
   const forTarget = isInContentTypeView ? 'contentType' : 'component';
 
-  const handleClickAddComponentToDZ = dynamicZoneTarget => {
+  const handleClickAddComponentToDZ = (dynamicZoneTarget) => {
     onOpenModalAddComponentsToDZ({ dynamicZoneTarget, targetUid });
   };
 
-  const handleClickEditField = async (forTarget, targetUid, attributeName, type) => {
+  const handleClickEditField = async (forTarget, targetUid, attributeName, type, customField) => {
     const attributeType = getAttributeDisplayedType(type);
     const step = type === 'component' ? '2' : null;
 
-    onOpenModalEditField({
-      forTarget,
-      targetUid,
-      attributeName,
-      attributeType,
-      step,
-    });
+    if (customField) {
+      onOpenModalEditCustomField({
+        forTarget,
+        targetUid,
+        attributeName,
+        attributeType,
+        customFieldUid: customField,
+      });
+    } else {
+      onOpenModalEditField({
+        forTarget,
+        targetUid,
+        attributeName,
+        attributeType,
+        step,
+      });
+    }
   };
 
   let label = get(modifiedData, [firstMainDataPath, 'schema', 'displayName'], '');
@@ -184,7 +183,7 @@ const ListView = () => {
           <Box background="neutral0" shadow="filterShadow" hasRadius>
             <List
               items={attributes}
-              customRowComponent={props => <ListRow {...props} onClick={handleClickEditField} />}
+              customRowComponent={(props) => <ListRow {...props} onClick={handleClickEditField} />}
               addComponentToDZ={handleClickAddComponentToDZ}
               targetUid={targetUid}
               editTarget={forTarget}

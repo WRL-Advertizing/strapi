@@ -8,10 +8,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { pxToRem } from '@strapi/helper-plugin';
-import Plus from '@strapi/icons/Plus';
-import { Box } from '@strapi/design-system/Box';
-import { Stack } from '@strapi/design-system/Stack';
-import { Typography } from '@strapi/design-system/Typography';
+import { Plus } from '@strapi/icons';
+import { Box, Stack, Typography } from '@strapi/design-system';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 import useDataManager from '../../hooks/useDataManager';
@@ -61,7 +59,7 @@ function DynamicZoneList({ customRowComponent, components, addComponent, name, t
   const [activeTab, setActiveTab] = useState(0);
   const { formatMessage } = useIntl();
 
-  const toggle = tab => {
+  const toggle = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
     }
@@ -137,7 +135,7 @@ function DynamicZoneList({ customRowComponent, components, addComponent, name, t
 }
 
 DynamicZoneList.defaultProps = {
-  addComponent: () => {},
+  addComponent() {},
   components: [],
   customRowComponent: null,
   name: null,

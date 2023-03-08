@@ -9,20 +9,23 @@ function useSelect(name) {
     isCreatingEntry,
     formErrors,
     modifiedData,
-    moveComponentUp,
-    moveComponentDown,
+    moveComponentField,
     removeComponentFromDynamicZone,
     readActionAllowedFields,
     updateActionAllowedFields,
   } = useCMEditViewDataManager();
 
-  const dynamicDisplayedComponents = useMemo(() => {
-    const parsedName = Array.isArray(name) ? [name] : name;
 
-    return get(modifiedData, parsedName, []).map(data => {
-      return data.__component;
-    });
-  }, [modifiedData, name]);
+  const dynamicDisplayedComponents = useMemo(
+    () =>
+      get(modifiedData, [name], []).map((data) => {
+        return {
+          componentUid: data.__component,
+          id: data.id ?? data.__temp_key__,
+        };
+      }),
+    [modifiedData, name]
+  );
   const contains = (items, name) => {
     if (Array.isArray(name)) {
       return items.includes(name[0]);
@@ -48,8 +51,7 @@ function useSelect(name) {
     isCreatingEntry,
     isFieldAllowed,
     isFieldReadable,
-    moveComponentUp,
-    moveComponentDown,
+    moveComponentField,
     removeComponentFromDynamicZone,
     dynamicDisplayedComponents,
   };

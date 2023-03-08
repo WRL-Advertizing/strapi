@@ -1,13 +1,11 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 import { pxToRem } from '@strapi/helper-plugin';
-import { Box } from '@strapi/design-system/Box';
-import { CardAction } from '@strapi/design-system/Card';
-import { Stack } from '@strapi/design-system/Stack';
-import Folder from '@strapi/icons/Folder';
+import { Box, CardAction, Stack } from '@strapi/design-system';
+import { Folder } from '@strapi/icons';
 
 import { FolderCardContext } from '../contexts/FolderCard';
 import useId from '../hooks/useId';
@@ -48,9 +46,10 @@ const Card = styled(Box)`
 export const FolderCard = forwardRef(
   ({ children, id, startAction, cardActions, ariaLabel, onClick, to, ...props }, ref) => {
     const generatedId = useId(id);
+    const fodlerCtxValue = useMemo(() => ({ id: generatedId }), [generatedId]);
 
     return (
-      <FolderCardContext.Provider value={{ id: generatedId }}>
+      <FolderCardContext.Provider value={fodlerCtxValue}>
         <Card position="relative" tabIndex={0} isCardActions={!!cardActions} ref={ref} {...props}>
           <FauxClickWrapper
             to={to || undefined}

@@ -1,11 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Box } from '@strapi/design-system/Box';
-import { Checkbox } from '@strapi/design-system/Checkbox';
-import { Flex } from '@strapi/design-system/Flex';
-import { Typography } from '@strapi/design-system/Typography';
+import { Grid, GridItem, Box, Checkbox, Flex, Typography } from '@strapi/design-system';
 import { useIntl } from 'react-intl';
 import get from 'lodash/get';
 import IS_DISABLED from 'ee_else_ce/pages/SettingsPage/pages/Roles/EditPage/components/PluginsAndSettings/SubCategory/utils/constants';
@@ -42,11 +38,8 @@ const CheckboxWrapper = styled.div`
 
 const SubCategory = ({ categoryName, isFormDisabled, subCategoryName, actions, pathToData }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const {
-    modifiedData,
-    onChangeParentCheckbox,
-    onChangeSimpleCheckbox,
-  } = usePermissionsDataManager();
+  const { modifiedData, onChangeParentCheckbox, onChangeSimpleCheckbox } =
+    usePermissionsDataManager();
   const { formatMessage } = useIntl();
 
   const mainData = get(modifiedData, pathToData, {});
@@ -61,7 +54,7 @@ const SubCategory = ({ categoryName, isFormDisabled, subCategoryName, actions, p
   const { hasAllActionsSelected, hasSomeActionsSelected } = getCheckboxState(dataWithoutCondition);
 
   const handleToggleModalIsOpen = () => {
-    setModalOpen(s => !s);
+    setModalOpen((s) => !s);
   };
 
   const handleModalClose = () => {
@@ -86,7 +79,7 @@ const SubCategory = ({ categoryName, isFormDisabled, subCategoryName, actions, p
               name={pathToData.join('..')}
               disabled={isFormDisabled || IS_DISABLED}
               // Keep same signature as packages/core/admin/admin/src/components/Roles/Permissions/index.js l.91
-              onValueChange={value => {
+              onValueChange={(value) => {
                 onChangeParentCheckbox({
                   target: {
                     name: pathToData.join('..'),
@@ -114,7 +107,7 @@ const SubCategory = ({ categoryName, isFormDisabled, subCategoryName, actions, p
                       name={checkboxName}
                       disabled={isFormDisabled || IS_DISABLED}
                       // Keep same signature as packages/core/admin/admin/src/components/Roles/Permissions/index.js l.91
-                      onValueChange={value => {
+                      onValueChange={(value) => {
                         onChangeSimpleCheckbox({
                           target: {
                             name: checkboxName,

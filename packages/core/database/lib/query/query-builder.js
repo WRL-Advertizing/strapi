@@ -2,37 +2,57 @@
 
 const _ = require('lodash/fp');
 
+const { DatabaseError } = require('../errors');
 const helpers = require('./helpers');
+const transactionCtx = require('../transaction-context');
 
-const createQueryBuilder = (uid, db) => {
+const createQueryBuilder = (uid, db, initialState = {}) => {
   const meta = db.metadata.get(uid);
   const { tableName } = meta;
 
-  const state = {
-    type: 'select',
-    select: [],
-    count: null,
-    max: null,
-    first: false,
-    data: null,
-    where: [],
-    joins: [],
-    populate: null,
-    limit: null,
-    offset: null,
-    transaction: null,
-    forUpdate: false,
-    orderBy: [],
-    groupBy: [],
-  };
+  const state = _.defaults(
+    {
+      type: 'select',
+      select: [],
+      count: null,
+      max: null,
+      first: false,
+      data: null,
+      where: [],
+      joins: [],
+      populate: null,
+      limit: null,
+      offset: null,
+      transaction: null,
+      forUpdate: false,
+      onConflict: null,
+      merge: null,
+      ignore: false,
+      orderBy: [],
+      groupBy: [],
+      increments: [],
+      decrements: [],
+      aliasCounter: 0,
+    },
+    initialState
+  );
 
-  let counter = 0;
-  const getAlias = () => `t${counter++}`;
+  const getAlias = () => {
+    const alias = `t${state.aliasCounter}`;
+
+    state.aliasCounter += 1;
+
+    return alias;
+  };
 
   return {
     alias: getAlias(),
     getAlias,
     state,
+
+    clone() {
+      return createQueryBuilder(uid, db, state);
+    },
 
     select(args) {
       state.type = 'select';
@@ -54,6 +74,24 @@ const createQueryBuilder = (uid, db) => {
       return this;
     },
 
+    onConflict(args) {
+      state.onConflict = args;
+
+      return this;
+    },
+
+    merge(args) {
+      state.merge = args;
+
+      return this;
+    },
+
+    ignore() {
+      state.ignore = true;
+
+      return this;
+    },
+
     delete() {
       state.type = 'delete';
 
@@ -67,6 +105,20 @@ const createQueryBuilder = (uid, db) => {
     update(data) {
       state.type = 'update';
       state.data = data;
+
+      return this;
+    },
+
+    increment(column, amount = 1) {
+      state.type = 'update';
+      state.increments.push({ column, amount });
+
+      return this;
+    },
+
+    decrement(column, amount = 1) {
+      state.type = 'update';
+      state.decrements.push({ column, amount });
 
       return this;
     },
@@ -189,7 +241,24 @@ const createQueryBuilder = (uid, db) => {
     },
 
     join(join) {
-      state.joins.push(join);
+      if (!join.targetField) {
+        state.joins.push(join);
+        return this;
+      }
+
+      const model = db.metadata.get(uid);
+      const attribute = model.attributes[join.targetField];
+
+      helpers.createJoin(
+        { db, qb: this },
+        {
+          alias: this.alias,
+          refAlias: join.alias,
+          attributeName: join.targetField,
+          attribute,
+        }
+      );
+
       return this;
     },
 
@@ -225,15 +294,9 @@ const createQueryBuilder = (uid, db) => {
       this.select('id');
       const subQB = this.getKnexQuery();
 
-      const nestedSubQuery = db
-        .getConnection()
-        .select('id')
-        .from(subQB.as('subQuery'));
+      const nestedSubQuery = db.getConnection().select('id').from(subQB.as('subQuery'));
 
-      return db
-        .getConnection(tableName)
-        [state.type]()
-        .whereIn('id', nestedSubQuery);
+      return db.getConnection(tableName)[state.type]().whereIn('id', nestedSubQuery);
     },
 
     processState() {
@@ -263,11 +326,11 @@ const createQueryBuilder = (uid, db) => {
     },
 
     processSelect() {
-      state.select = state.select.map(field => helpers.toColumnName(meta, field));
+      state.select = state.select.map((field) => helpers.toColumnName(meta, field));
 
       if (this.shouldUseDistinct()) {
-        const joinsOrderByColumns = state.joins.flatMap(join => {
-          return _.keys(join.orderBy).map(key => this.aliasColumn(key, join.alias));
+        const joinsOrderByColumns = state.joins.flatMap((join) => {
+          return _.keys(join.orderBy).map((key) => this.aliasColumn(key, join.alias));
         });
         const orderByColumns = state.orderBy.map(({ column }) => column);
 
@@ -292,7 +355,7 @@ const createQueryBuilder = (uid, db) => {
 
       switch (state.type) {
         case 'select': {
-          qb.select(state.select.map(column => this.aliasColumn(column)));
+          qb.select(state.select.map((column) => this.aliasColumn(column)));
 
           if (this.shouldUseDistinct()) {
             qb.distinct();
@@ -325,7 +388,9 @@ const createQueryBuilder = (uid, db) => {
           break;
         }
         case 'update': {
-          qb.update(state.data);
+          if (state.data) {
+            qb.update(state.data);
+          }
           break;
         }
         case 'delete': {
@@ -337,6 +402,9 @@ const createQueryBuilder = (uid, db) => {
           db.truncate();
           break;
         }
+        default: {
+          throw new Error('Unknown query type');
+        }
       }
 
       if (state.transaction) {
@@ -345,6 +413,22 @@ const createQueryBuilder = (uid, db) => {
 
       if (state.forUpdate) {
         qb.forUpdate();
+      }
+
+      if (!_.isEmpty(state.increments)) {
+        state.increments.forEach((incr) => qb.increment(incr.column, incr.amount));
+      }
+
+      if (!_.isEmpty(state.decrements)) {
+        state.decrements.forEach((decr) => qb.decrement(decr.column, decr.amount));
+      }
+
+      if (state.onConflict) {
+        if (state.merge) {
+          qb.onConflict(state.onConflict).merge(state.merge);
+        } else if (state.ignore) {
+          qb.onConflict(state.onConflict).ignore();
+        }
       }
 
       if (state.limit) {
@@ -374,7 +458,7 @@ const createQueryBuilder = (uid, db) => {
 
       // if there are joins and it is a delete or update use a sub query
       if (state.search) {
-        qb.where(subQb => {
+        qb.where((subQb) => {
           helpers.applySearch(subQb, state.search, { qb: this, db, uid });
         });
       }
@@ -390,10 +474,18 @@ const createQueryBuilder = (uid, db) => {
       try {
         const qb = this.getKnexQuery();
 
+        if (transactionCtx.get()) {
+          qb.transacting(transactionCtx.get());
+        }
+
         const rows = await qb;
 
         if (state.populate && !_.isNil(rows)) {
-          await helpers.applyPopulate(_.castArray(rows), state.populate, { qb: this, uid, db });
+          await helpers.applyPopulate(_.castArray(rows), state.populate, {
+            qb: this,
+            uid,
+            db,
+          });
         }
 
         let results = rows;
@@ -405,6 +497,16 @@ const createQueryBuilder = (uid, db) => {
       } catch (error) {
         db.dialect.transformErrors(error);
       }
+    },
+
+    stream({ mapResults = true } = {}) {
+      if (state.type === 'select') {
+        return new helpers.ReadableQuery({ qb: this, db, uid, mapResults });
+      }
+
+      throw new DatabaseError(
+        `query-builder.stream() has been called with an unsupported query type: "${state.type}"`
+      );
     },
   };
 };

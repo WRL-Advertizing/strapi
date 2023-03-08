@@ -15,17 +15,19 @@ import {
   getYupInnerErrors,
   Link,
 } from '@strapi/helper-plugin';
-import { Box } from '@strapi/design-system/Box';
-import { Stack } from '@strapi/design-system/Stack';
-import { Main } from '@strapi/design-system/Main';
-import { Flex } from '@strapi/design-system/Flex';
-import { Button } from '@strapi/design-system/Button';
-import { TextInput } from '@strapi/design-system/TextInput';
-import { Checkbox } from '@strapi/design-system/Checkbox';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Typography } from '@strapi/design-system/Typography';
-import EyeStriked from '@strapi/icons/EyeStriked';
-import Eye from '@strapi/icons/Eye';
+import {
+  Box,
+  Stack,
+  Main,
+  Flex,
+  Button,
+  TextInput,
+  Checkbox,
+  Grid,
+  GridItem,
+  Typography,
+} from '@strapi/design-system';
+import { EyeStriked, Eye } from '@strapi/icons';
 import UnauthenticatedLayout, {
   Column,
   LayoutContent,
@@ -205,9 +207,9 @@ const Register = ({ authType, fieldsToDisable, noSignin, onSubmit, schema }) => 
                       endAction={
                         // eslint-disable-next-line react/jsx-wrap-multilines
                         <FieldActionWrapper
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
-                            setPasswordShown(prev => !prev);
+                            setPasswordShown((prev) => !prev);
                           }}
                           label={formatMessage(
                             passwordShown
@@ -246,9 +248,9 @@ const Register = ({ authType, fieldsToDisable, noSignin, onSubmit, schema }) => 
                       endAction={
                         // eslint-disable-next-line react/jsx-wrap-multilines
                         <FieldActionWrapper
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
-                            setConfirmPasswordShown(prev => !prev);
+                            setConfirmPasswordShown((prev) => !prev);
                           }}
                           label={formatMessage(
                             confirmPasswordShown
@@ -268,12 +270,12 @@ const Register = ({ authType, fieldsToDisable, noSignin, onSubmit, schema }) => 
                       required
                       label={formatMessage({
                         id: 'Auth.form.confirmPassword.label',
-                        defaultMessage: 'Confirmation Password',
+                        defaultMessage: 'Confirm Password',
                       })}
                       type={confirmPasswordShown ? 'text' : 'password'}
                     />
                     <Checkbox
-                      onValueChange={checked => {
+                      onValueChange={(checked) => {
                         handleChange({ target: { value: checked, name: 'news' } });
                       }}
                       value={values.news}
@@ -338,7 +340,7 @@ const Register = ({ authType, fieldsToDisable, noSignin, onSubmit, schema }) => 
 Register.defaultProps = {
   fieldsToDisable: [],
   noSignin: false,
-  onSubmit: e => e.preventDefault(),
+  onSubmit: (e) => e.preventDefault(),
 };
 
 Register.propTypes = {

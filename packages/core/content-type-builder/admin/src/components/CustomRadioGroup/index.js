@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { Typography } from '@strapi/design-system/Typography';
-import { Box } from '@strapi/design-system/Box';
-import { Flex } from '@strapi/design-system/Flex';
-import { Stack } from '@strapi/design-system/Stack';
+import { Typography, Box, Flex, Stack } from '@strapi/design-system';
 import { Wrapper } from './components';
 
 const CustomRadioGroup = ({ intlLabel, name, onChange, radios, value }) => {
@@ -16,7 +13,7 @@ const CustomRadioGroup = ({ intlLabel, name, onChange, radios, value }) => {
         {formatMessage(intlLabel)}
       </Typography>
       <Wrapper horizontal spacing={4} style={{ alignItems: 'stretch' }}>
-        {radios.map(radio => {
+        {radios.map((radio) => {
           return (
             <label htmlFor={radio.value.toString()} key={radio.value} className="container">
               <input
