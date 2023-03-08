@@ -18706,14 +18706,14 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-purest@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/purest/-/purest-4.0.2.tgz#6d60403f00731bbe3c508955c96d56e8c0f30098"
-  integrity sha512-Uq6kdia8zGVHOb/0zAOb7FvKFMKeyeTZTLEwpO0JR3cIFEkpH6asv3ls9M9URDjHiYIdgAPmht5ecSbvPacfyg==
+purest@4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/purest/-/purest-4.0.3.tgz#a7cb90df9518ce1d4e6c1e768fe0fbef1fe733ce"
+  integrity sha512-y2le29lcU5yC259PitpvVidZfaza1cf/okyZnFctobXMA1U7wnIVZBfbhWhgKKK+AL7AbzWqHCfSaBDdRS8Kmg==
   dependencies:
     "@simov/deep-extend" "^1.0.0"
-    qs "^6.10.3"
-    request-compose "^2.1.4"
+    qs "^6.11.0"
+    request-compose "^2.1.6"
     request-multipart "^1.0.0"
     request-oauth "^1.0.1"
 
@@ -18729,7 +18729,7 @@ qs@6.10.3:
   dependencies:
     side-channel "^1.0.4"
 
-qs@6.11.0, qs@^6.10.0, qs@^6.10.2, qs@^6.10.3, qs@^6.11.0, qs@^6.4.0, qs@^6.5.2, qs@^6.9.6:
+qs@6.11.0, qs@^6.10.0, qs@^6.10.2, qs@^6.11.0, qs@^6.4.0, qs@^6.5.2, qs@^6.9.6:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
   integrity sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==
@@ -19524,10 +19524,10 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request-compose@^2.1.4:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/request-compose/-/request-compose-2.1.5.tgz#10c99ae13aa21ddddf3b4baf8841cc3599ebe3e2"
-  integrity sha512-qfnt6TMfss3SKYt/l0QipIjPYV46DlQwIckP6t4TaR3Cs/11nsmkbIUAbm13kvqhNqb5RHxbMordHzS6AezHvQ==
+request-compose@^2.1.4, request-compose@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/request-compose/-/request-compose-2.1.6.tgz#f498d6afd4ce983066432446d4b1e3d3d51fbd0f"
+  integrity sha512-S07L+2VbJB32WddD/o/PnYGKym63zLVbymygVWXvt8L79VAngcjAxhHaGuFOICLxEV90EasEPzqPKKHPspXP8w==
 
 request-ip@2.1.3:
   version "2.1.3"
