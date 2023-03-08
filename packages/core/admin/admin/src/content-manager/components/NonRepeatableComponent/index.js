@@ -7,6 +7,7 @@ import { Box, Grid, GridItem, Stack } from '@strapi/design-system';
 import { useContentTypeLayout } from '../../hooks';
 import FieldComponent from '../FieldComponent';
 import Inputs from '../Inputs';
+import DynamicZone from '../DynamicZone';
 import useLazyComponents from '../../hooks/useLazyComponents';
 
 const NonRepeatableComponent = ({ componentUid, isFromDynamicZone, isNested, name }) => {
@@ -35,6 +36,7 @@ const NonRepeatableComponent = ({ componentUid, isFromDynamicZone, isNested, nam
             <Grid gap={4} key={key}>
               {fieldRow.map(({ name: fieldName, size, metadatas, fieldSchema, queryInfos }) => {
                 const isComponent = fieldSchema.type === 'component';
+                const isDynamicZone = fieldSchema.type === 'dynamiczone';
                 const keys = `${name}.${fieldName}`;
 
                 if (isComponent) {
@@ -55,6 +57,13 @@ const NonRepeatableComponent = ({ componentUid, isFromDynamicZone, isNested, nam
                         name={keys}
                         required={fieldSchema.required || false}
                       />
+                    </GridItem>
+                  );
+                }
+                if (isDynamicZone) {
+                  return (
+                    <GridItem col={size} s={12} xs={12} key={name}>
+                      <DynamicZone name={keys} fieldSchema={fieldSchema} metadatas={metadatas} />
                     </GridItem>
                   );
                 }
