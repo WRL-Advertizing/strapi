@@ -19,24 +19,32 @@ import {
   stopPropagation,
   LinkButton,
 } from '@strapi/helper-plugin';
-import { HeaderLayout, Layout, ContentLayout, ActionLayout } from '@strapi/design-system/Layout';
-import { EmptyStateLayout } from '@strapi/design-system/EmptyStateLayout';
-import { Flex } from '@strapi/design-system/Flex';
-import { Stack } from '@strapi/design-system/Stack';
-import { IconButton } from '@strapi/design-system/IconButton';
-import { BaseCheckbox } from '@strapi/design-system/BaseCheckbox';
-import { Table, Thead, Tr, Th, Tbody, Td, TFooter } from '@strapi/design-system/Table';
-import { Typography } from '@strapi/design-system/Typography';
-import { Button } from '@strapi/design-system/Button';
-import { VisuallyHidden } from '@strapi/design-system/VisuallyHidden';
-import { Switch } from '@strapi/design-system/Switch';
-import { Main } from '@strapi/design-system/Main';
-import { useNotifyAT } from '@strapi/design-system/LiveRegions';
-import { Box } from '@strapi/design-system/Box';
-import Plus from '@strapi/icons/Plus';
-import Pencil from '@strapi/icons/Pencil';
-import Trash from '@strapi/icons/Trash';
-import EmptyDocuments from '@strapi/icons/EmptyDocuments';
+import {
+  HeaderLayout,
+  Layout,
+  ContentLayout,
+  ActionLayout,
+  EmptyStateLayout,
+  Flex,
+  Stack,
+  IconButton,
+  BaseCheckbox,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  TFooter,
+  Typography,
+  Button,
+  Switch,
+  Main,
+  useNotifyAT,
+  Box,
+  VisuallyHidden,
+} from '@strapi/design-system';
+import { Plus, Pencil, Trash, EmptyDocuments } from '@strapi/icons';
 import reducer, { initialState } from './reducer';
 import adminPermissions from '../../../../../permissions';
 
@@ -60,7 +68,7 @@ const ListView = () => {
   const { pathname } = useLocation();
   const rowsCount = webhooks.length;
   const webhooksToDeleteLength = webhooksToDelete.length;
-  const getWebhookIndex = id => webhooks.findIndex(webhook => webhook.id === id);
+  const getWebhookIndex = (id) => webhooks.findIndex((webhook) => webhook.id === id);
 
   useEffect(() => {
     isMounted.current = true;
@@ -108,7 +116,7 @@ const ListView = () => {
   };
 
   const handleToggleModal = () => {
-    setShowModal(prev => !prev);
+    setShowModal((prev) => !prev);
   };
 
   const handleConfirmDelete = () => {
@@ -169,7 +177,7 @@ const ListView = () => {
     setShowModal(false);
   };
 
-  const handleDeleteClick = id => {
+  const handleDeleteClick = (id) => {
     setShowModal(true);
 
     if (id !== 'all') {
@@ -235,7 +243,7 @@ const ListView = () => {
     });
   };
 
-  const handleGoTo = to => {
+  const handleGoTo = (to) => {
     push(`${pathname}/${to}`);
   };
 
@@ -252,7 +260,7 @@ const ListView = () => {
           primaryAction={
             canCreate &&
             !loadingWebhooks && (
-              <LinkButton startIcon={<Plus />} variant="default" to={`${pathname}/create`} size="L">
+              <LinkButton startIcon={<Plus />} variant="default" to={`${pathname}/create`} size="S">
                 {formatMessage({
                   id: 'Settings.webhooks.list.button.add',
                   defaultMessage: 'Create new webhook',
@@ -363,7 +371,7 @@ const ListView = () => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {webhooks.map(webhook => (
+                    {webhooks.map((webhook) => (
                       <Tr
                         key={webhook.id}
                         {...onRowClick({
@@ -378,7 +386,7 @@ const ListView = () => {
                               defaultMessage: 'Select',
                             })} ${webhook.name}`}
                             value={webhooksToDelete?.includes(webhook.id)}
-                            onValueChange={value => handleSelectOneCheckbox(value, webhook.id)}
+                            onValueChange={(value) => handleSelectOneCheckbox(value, webhook.id)}
                             id="select"
                             name="select"
                           />

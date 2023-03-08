@@ -3,21 +3,22 @@
 
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '@strapi/design-system/Box';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Stack } from '@strapi/design-system/Stack';
+import { Box, Grid, GridItem, Stack } from '@strapi/design-system';
 import { useContentTypeLayout } from '../../hooks';
 import FieldComponent from '../FieldComponent';
 import Inputs from '../Inputs';
 import DynamicZone from '../DynamicZone';
+import useLazyComponents from '../../hooks/useLazyComponents';
 
 const NonRepeatableComponent = ({ componentUid, isFromDynamicZone, isNested, name }) => {
   const { getComponentLayout } = useContentTypeLayout();
-  const componentLayoutData = useMemo(() => getComponentLayout(componentUid), [
-    componentUid,
-    getComponentLayout,
-  ]);
+  const componentLayoutData = useMemo(
+    () => getComponentLayout(componentUid),
+    [componentUid, getComponentLayout]
+  );
   const fields = componentLayoutData.layouts.edit;
+
+  const { lazyComponentStore } = useLazyComponents();
 
   return (
     <Box
@@ -67,15 +68,18 @@ const NonRepeatableComponent = ({ componentUid, isFromDynamicZone, isNested, nam
                   );
                 }
                 
-return (
-  <GridItem col={size} key={fieldName} s={12} xs={12}>
-    <Inputs
-      keys={keys}
-      fieldSchema={fieldSchema}
-      metadatas={metadatas}
-      queryInfos={queryInfos}
-    />
-  </GridItem>
+                return (
+                  <GridItem col={size} key={fieldName} s={12} xs={12}>
+                    <Inputs
+                      componentUid={componentUid}
+                      keys={keys}
+                      fieldSchema={fieldSchema}
+                      metadatas={metadatas}
+                      queryInfos={queryInfos}
+                      size={size}
+                      customFieldInputs={lazyComponentStore}
+                    />
+                  </GridItem>
                 );
               })}
             </Grid>

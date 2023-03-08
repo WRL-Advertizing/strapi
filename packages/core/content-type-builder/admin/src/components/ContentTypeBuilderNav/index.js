@@ -2,8 +2,8 @@ import React from 'react';
 import upperFirst from 'lodash/upperFirst';
 import { useIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import Plus from '@strapi/icons/Plus';
-import { Box } from '@strapi/design-system/Box';
+import { Plus } from '@strapi/icons';
+import { Box, TextButton } from '@strapi/design-system';
 import {
   SubNav,
   SubNavHeader,
@@ -11,8 +11,7 @@ import {
   SubNavLinkSection,
   SubNavSection,
   SubNavSections,
-} from '@strapi/design-system/v2/SubNav';
-import { TextButton } from '@strapi/design-system/TextButton';
+} from '@strapi/design-system/v2';
 import useContentTypeBuilderMenu from './useContentTypeBuilderMenu';
 import getTrad from '../../utils/getTrad';
 
@@ -31,7 +30,7 @@ const ContentTypeBuilderNav = () => {
         searchable
         value={searchValue}
         onClear={() => onSearchChange('')}
-        onChange={e => onSearchChange(e.target.value)}
+        onChange={(e) => onSearchChange(e.target.value)}
         label={formatMessage({
           id: `${getTrad('plugin.name')}`,
           defaultMessage: 'Content-Types Builder',
@@ -42,7 +41,7 @@ const ContentTypeBuilderNav = () => {
         })}
       />
       <SubNavSections>
-        {menu.map(section => (
+        {menu.map((section) => (
           <React.Fragment key={section.name}>
             <SubNavSection
               label={formatMessage({
@@ -52,11 +51,11 @@ const ContentTypeBuilderNav = () => {
               collapsable
               badgeLabel={section.links.length.toString()}
             >
-              {section.links.map(link => {
+              {section.links.map((link) => {
                 if (link.links) {
                   return (
                     <SubNavLinkSection key={link.name} label={upperFirst(link.title)}>
-                      {link.links.map(subLink => (
+                      {link.links.map((subLink) => (
                         <SubNavLink
                           as={NavLink}
                           to={subLink.to}

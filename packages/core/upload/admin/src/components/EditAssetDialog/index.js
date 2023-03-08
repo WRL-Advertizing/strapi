@@ -9,16 +9,21 @@ import React, { useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import isEqual from 'lodash/isEqual';
 import styled from 'styled-components';
-import { ModalLayout, ModalBody, ModalFooter } from '@strapi/design-system/ModalLayout';
-import { Stack } from '@strapi/design-system/Stack';
-import { Flex } from '@strapi/design-system/Flex';
-import { Loader } from '@strapi/design-system/Loader';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Button } from '@strapi/design-system/Button';
-import { FieldLabel } from '@strapi/design-system/Field';
-import { TextInput } from '@strapi/design-system/TextInput';
+import {
+  ModalLayout,
+  ModalBody,
+  ModalFooter,
+  Stack,
+  Flex,
+  Loader,
+  Grid,
+  GridItem,
+  Button,
+  FieldLabel,
+  TextInput,
+  VisuallyHidden,
+} from '@strapi/design-system';
 import { getFileExtension, Form, pxToRem, useTracking } from '@strapi/helper-plugin';
-import { VisuallyHidden } from '@strapi/design-system/VisuallyHidden';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
@@ -64,7 +69,7 @@ export const EditAssetDialog = ({
     enabled: true,
   });
 
-  const handleSubmit = async values => {
+  const handleSubmit = async (values) => {
     const nextAsset = { ...asset, ...values, folder: values.parent.value };
 
     if (asset.isLocal) {
@@ -131,7 +136,7 @@ export const EditAssetDialog = ({
     },
   };
 
-  const handleClose = values => {
+  const handleClose = (values) => {
     if (!isEqual(initialFormData, values)) {
       handleConfirmClose();
     } else {
@@ -225,6 +230,14 @@ export const EditAssetDialog = ({
                           }),
                           value: getFileExtension(asset.ext),
                         },
+
+                        {
+                          label: formatMessage({
+                            id: getTrad('modal.file-details.id'),
+                            defaultMessage: 'Asset ID',
+                          }),
+                          value: asset.id,
+                        },
                       ]}
                     />
 
@@ -280,7 +293,7 @@ export const EditAssetDialog = ({
                         name="parent"
                         defaultValue={values.parent}
                         options={folderStructure}
-                        onChange={value => {
+                        onChange={(value) => {
                           setFieldValue('parent', value);
                         }}
                         menuPortalTarget={document.querySelector('body')}

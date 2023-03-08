@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
-import { StrapiAppProvider, AppInfosContext, TrackingContext } from '@strapi/helper-plugin';
+import { StrapiAppProvider, AppInfosContext, TrackingProvider } from '@strapi/helper-plugin';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
@@ -16,21 +16,21 @@ jest.mock('../../../hooks', () => ({
   useThemeToggle: jest.fn(() => ({ currentTheme: 'light', themes: { light: lightTheme } })),
 }));
 
-jest.mock('@fortawesome/react-fontawesome', () => ({
-  FontAwesomeIcon: () => null,
-}));
-
 jest.mock('react-intl', () => ({
   FormattedMessage: ({ id }) => id,
   useIntl: () => ({ formatMessage: jest.fn(({ id }) => id) }),
 }));
-jest.mock('../pages/ApplicationInfosPage', () => () => <h1>App infos</h1>);
+jest.mock('../pages/ApplicationInfosPage', () => () => {
+  return <h1>App infos</h1>;
+});
+
+const appInfos = { shouldUpdateStrapi: false };
 
 const makeApp = (history, settings) => (
   <ThemeToggleProvider themes={{ light: lightTheme, dark: darkTheme }}>
-    <TrackingContext.Provider value={{ uuid: null, telemetryProperties: undefined }}>
+    <TrackingProvider>
       <Theme>
-        <AppInfosContext.Provider value={{ shouldUpdateStrapi: false }}>
+        <AppInfosContext.Provider value={appInfos}>
           <StrapiAppProvider
             settings={settings}
             plugins={{}}
@@ -47,7 +47,7 @@ const makeApp = (history, settings) => (
           </StrapiAppProvider>
         </AppInfosContext.Provider>
       </Theme>
-    </TrackingContext.Provider>
+    </TrackingProvider>
   </ThemeToggleProvider>
 );
 
@@ -103,16 +103,11 @@ describe('ADMIN | pages | SettingsPage', () => {
         padding-bottom: 16px;
       }
 
-      .c1 {
-        width: 14.5rem;
-        background: #f6f6f9;
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow-y: auto;
-        border-right: 1px solid #dcdce4;
-        z-index: 1;
+      .c4 {
+        font-weight: 600;
+        font-size: 1.125rem;
+        line-height: 1.22;
+        color: #32324d;
       }
 
       .c3 {
@@ -147,24 +142,6 @@ describe('ADMIN | pages | SettingsPage', () => {
         flex-direction: column;
       }
 
-      .c4 {
-        color: #32324d;
-        font-weight: 600;
-        font-size: 1.125rem;
-        line-height: 1.22;
-      }
-
-      .c7 {
-        height: 1px;
-        border: none;
-        margin: 0;
-      }
-
-      .c8 {
-        width: 1.5rem;
-        background-color: #dcdce4;
-      }
-
       .c11 > * {
         margin-top: 0;
         margin-bottom: 0;
@@ -172,6 +149,32 @@ describe('ADMIN | pages | SettingsPage', () => {
 
       .c11 > * + * {
         margin-top: 8px;
+      }
+
+      .c7 {
+        height: 1px;
+        border: none;
+        -webkit-flex-shrink: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        margin: 0;
+      }
+
+      .c1 {
+        width: 14.5rem;
+        background: #f6f6f9;
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid #dcdce4;
+        z-index: 1;
+      }
+
+      .c8 {
+        width: 1.5rem;
+        background-color: #dcdce4;
       }
 
       <div
@@ -206,7 +209,6 @@ describe('ADMIN | pages | SettingsPage', () => {
           >
             <ol
               class="c10 c11"
-              spacing="2"
             />
           </div>
         </nav>
@@ -316,19 +318,20 @@ describe('ADMIN | pages | SettingsPage', () => {
       },
     });
     const route = '/settings/application-infos';
+    const user = userEvent.setup();
     history.push(route);
 
     render(App);
 
     expect(screen.getByText(/App infos/)).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('i18n.plugin.name'));
+    await user.click(screen.getByText('i18n.plugin.name'));
 
     await waitFor(() => {
       expect(screen.getByText(/i18n settings/)).toBeInTheDocument();
     });
 
-    userEvent.click(screen.getByText('email'));
+    await user.click(screen.getByText('email'));
 
     await waitFor(() => {
       expect(screen.getByText(/email settings/)).toBeInTheDocument();

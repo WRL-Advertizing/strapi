@@ -11,17 +11,21 @@ import {
   useTracking,
   Link,
 } from '@strapi/helper-plugin';
-import { Box } from '@strapi/design-system/Box';
-import { Button } from '@strapi/design-system/Button';
-import { ContentLayout, HeaderLayout } from '@strapi/design-system/Layout';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Main } from '@strapi/design-system/Main';
-import { Flex } from '@strapi/design-system/Flex';
-import { Stack } from '@strapi/design-system/Stack';
-import { Typography } from '@strapi/design-system/Typography';
-import { TextInput } from '@strapi/design-system/TextInput';
-import { Textarea } from '@strapi/design-system/Textarea';
-import ArrowLeft from '@strapi/icons/ArrowLeft';
+import {
+  Box,
+  Button,
+  ContentLayout,
+  HeaderLayout,
+  Grid,
+  GridItem,
+  Main,
+  Flex,
+  Stack,
+  Typography,
+  TextInput,
+  Textarea,
+} from '@strapi/design-system';
+import { ArrowLeft } from '@strapi/icons';
 import { Formik } from 'formik';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -56,7 +60,7 @@ const CreatePage = () => {
   const { isLoading: isLayoutLoading, data: permissionsLayout } = useFetchPermissionsLayout();
   const { permissions: rolePermissions, isLoading: isRoleLoading } = useFetchRole(id);
 
-  const handleCreateRoleSubmit = data => {
+  const handleCreateRoleSubmit = (data) => {
     lockApp();
     setIsSubmiting(true);
 
@@ -72,7 +76,7 @@ const CreatePage = () => {
         body: data,
       })
     )
-      .then(async res => {
+      .then(async (res) => {
         const { permissionsToSend } = permissionsRef.current.getPermissions();
 
         if (id) {
@@ -90,7 +94,7 @@ const CreatePage = () => {
 
         return res;
       })
-      .then(res => {
+      .then((res) => {
         setIsSubmiting(false);
         toggleNotification({
           type: 'success',
@@ -98,7 +102,7 @@ const CreatePage = () => {
         });
         replace(`/settings/roles/${res.data.id}`);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setIsSubmiting(false);
         toggleNotification({
@@ -256,10 +260,12 @@ const CreatePage = () => {
   );
 };
 
-export default () => (
-  <CheckPagePermissions permissions={adminPermissions.settings.roles.create}>
-    <CreatePage />
-  </CheckPagePermissions>
-);
+export default function () {
+  return (
+    <CheckPagePermissions permissions={adminPermissions.settings.roles.create}>
+      <CreatePage />
+    </CheckPagePermissions>
+  );
+}
 
 export { CreatePage };

@@ -2,15 +2,23 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useIntl } from 'react-intl';
-import { ModalLayout, ModalBody, ModalHeader } from '@strapi/design-system/ModalLayout';
-import { Flex } from '@strapi/design-system/Flex';
-import { Button } from '@strapi/design-system/Button';
-import { Divider } from '@strapi/design-system/Divider';
-import { Typography } from '@strapi/design-system/Typography';
-import { Tabs, Tab, TabGroup, TabPanels, TabPanel } from '@strapi/design-system/Tabs';
-import { Badge } from '@strapi/design-system/Badge';
-import { Loader } from '@strapi/design-system/Loader';
-import { Stack } from '@strapi/design-system/Stack';
+import {
+  ModalLayout,
+  ModalBody,
+  ModalHeader,
+  Flex,
+  Button,
+  Divider,
+  Typography,
+  Tabs,
+  Tab,
+  TabGroup,
+  TabPanels,
+  TabPanel,
+  Badge,
+  Loader,
+  Stack,
+} from '@strapi/design-system';
 import { NoPermissions, AnErrorOccurred, useSelectionState, pxToRem } from '@strapi/helper-plugin';
 import { getTrad, containsAssetFilter } from '../../utils';
 import { SelectedStep } from './SelectedStep';
@@ -73,7 +81,11 @@ export const AssetDialog = ({
     error: errorAssets,
   } = useAssets({ skipWhen: !canRead, query: queryObject });
 
-  const { data: folders, isLoading: isLoadingFolders, error: errorFolders } = useFolders({
+  const {
+    data: folders,
+    isLoading: isLoadingFolders,
+    error: errorFolders,
+  } = useFolders({
     enabled: canRead && !containsAssetFilter(queryObject) && pagination?.page === 1,
     query: queryObject,
   });
@@ -89,7 +101,7 @@ export const AssetDialog = ({
 
   const handleSelectAllAssets = () => {
     const hasAllAssets = assets.every(
-      asset => selectedAssets.findIndex(curr => curr.id === asset.id) !== -1
+      (asset) => selectedAssets.findIndex((curr) => curr.id === asset.id) !== -1
     );
 
     if (hasAllAssets) {
@@ -101,7 +113,7 @@ export const AssetDialog = ({
     return multiple ? selectAll(allowedAssets) : undefined;
   };
 
-  const handleSelectAsset = asset => {
+  const handleSelectAsset = (asset) => {
     return multiple ? selectOne(asset) : selectOnly(asset);
   };
 
@@ -197,7 +209,7 @@ export const AssetDialog = ({
     setSelections(nextAssets);
   };
 
-  const handleFolderChange = folder => {
+  const handleFolderChange = (folder) => {
     onChangeFolder(folder);
     onChangeFolderParam(folder);
   };
@@ -270,8 +282,8 @@ export const AssetDialog = ({
                 selectedAssets={selectedAssets}
                 multiple={multiple}
                 onSelectAllAsset={handleSelectAllAssets}
-                onEditAsset={canUpdate ? setAssetToEdit : undefined}
-                onEditFolder={canUpdate ? setFolderToEdit : undefined}
+                onEditAsset={setAssetToEdit}
+                onEditFolder={setFolderToEdit}
                 pagination={pagination}
                 queryObject={queryObject}
                 onAddAsset={onAddAsset}

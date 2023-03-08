@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
-import { Dialog, DialogBody, DialogFooter } from '@strapi/design-system/Dialog';
-import { Select, Option } from '@strapi/design-system/Select';
-import { Button } from '@strapi/design-system/Button';
-import { Box } from '@strapi/design-system/Box';
-import { Typography } from '@strapi/design-system/Typography';
-import { Flex } from '@strapi/design-system/Flex';
-import { Stack } from '@strapi/design-system/Stack';
-import ExclamationMarkCircle from '@strapi/icons/ExclamationMarkCircle';
-import Duplicate from '@strapi/icons/Duplicate';
-import { useCMEditViewDataManager, useNotification } from '@strapi/helper-plugin';
-import { axiosInstance, getTrad } from '../../../utils';
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Select,
+  Option,
+  Button,
+  Box,
+  Typography,
+  Flex,
+  Stack,
+} from '@strapi/design-system';
+import { ExclamationMarkCircle, Duplicate } from '@strapi/icons';
+import { useCMEditViewDataManager, useNotification, useFetchClient } from '@strapi/helper-plugin';
+import { getTrad } from '../../../utils';
 import { cleanData, generateOptions } from './utils';
 
 const StyledTypography = styled(Typography)`
@@ -31,7 +35,7 @@ const CenteredTypography = styled(Typography)`
   text-align: center;
 `;
 
-const CMEditViewCopyLocale = props => {
+const CMEditViewCopyLocale = (props) => {
   if (!props.localizations.length) {
     return null;
   }
@@ -49,6 +53,7 @@ const Content = ({ appLocales, currentLocale, localizations, readPermissions }) 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(options[0]?.value || '');
+  const { get } = useFetchClient();
 
   const handleConfirmCopyLocale = async () => {
     if (!value) {
@@ -61,15 +66,19 @@ const Content = ({ appLocales, currentLocale, localizations, readPermissions }) 
 
     setIsLoading(true);
     try {
-      const { data: response } = await axiosInstance.get(requestURL);
+      const { data: response } = await get(requestURL);
 
       const cleanedData = cleanData(response, allLayoutData, localizations);
-      ['createdBy', 'updatedBy', 'publishedAt', 'id', 'createdAt'].forEach(key => {
+      ['createdBy', 'updatedBy', 'publishedAt', 'id', 'createdAt'].forEach((key) => {
         if (!initialData[key]) return;
         cleanedData[key] = initialData[key];
       });
 
-      dispatch({ type: 'ContentManager/CrudReducer/GET_DATA_SUCCEEDED', data: cleanedData });
+      dispatch({
+        type: 'ContentManager/CrudReducer/GET_DATA_SUCCEEDED',
+        data: cleanedData,
+        setModifiedDataOnly: true,
+      });
 
       toggleNotification({
         type: 'success',
@@ -94,12 +103,12 @@ const Content = ({ appLocales, currentLocale, localizations, readPermissions }) 
     }
   };
 
-  const handleChange = value => {
+  const handleChange = (value) => {
     setValue(value);
   };
 
   const handleToggle = () => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   };
 
   return (

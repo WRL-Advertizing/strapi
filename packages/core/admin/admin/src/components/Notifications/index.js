@@ -1,14 +1,14 @@
 import { NotificationsProvider } from '@strapi/helper-plugin';
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { Stack } from '@strapi/design-system/Stack';
+import { Stack } from '@strapi/design-system';
 import Notification from './Notification';
 import reducer, { initialState } from './reducer';
 
 const Notifications = ({ children }) => {
   const [{ notifications }, dispatch] = useReducer(reducer, initialState);
 
-  const displayNotification = config => {
+  const displayNotification = (config) => {
     dispatch({
       type: 'SHOW_NOTIFICATION',
       config,
@@ -26,7 +26,7 @@ const Notifications = ({ children }) => {
         width={`${500 / 16}rem`}
         zIndex={10}
       >
-        {notifications.map(notification => {
+        {notifications.map((notification) => {
           return (
             <Notification key={notification.id} dispatch={dispatch} notification={notification} />
           );

@@ -3,14 +3,8 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 import { pxToRem } from '@strapi/helper-plugin';
-import Check from '@strapi/icons/Check';
-import Cross from '@strapi/icons/Cross';
-import Loader from '@strapi/icons/Loader';
-import { Box } from '@strapi/design-system/Box';
-import { Flex } from '@strapi/design-system/Flex';
-import { Typography } from '@strapi/design-system/Typography';
-import { Stack } from '@strapi/design-system/Stack';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
+import { Check, Cross, Loader } from '@strapi/icons';
+import { Box, Flex, Typography, Stack, Grid, GridItem } from '@strapi/design-system';
 
 // Being discussed in Notion: create a <Icon /> component in Parts
 const Icon = styled.svg(
@@ -160,7 +154,7 @@ const TriggerContainer = ({ isPending, onCancel, response }) => {
 
 TriggerContainer.defaultProps = {
   isPending: false,
-  onCancel: () => {},
+  onCancel() {},
   response: {},
 };
 
