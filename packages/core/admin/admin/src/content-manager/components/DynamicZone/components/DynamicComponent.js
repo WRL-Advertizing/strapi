@@ -83,7 +83,7 @@ const DynamicZoneComponent = ({
   onDropItem,
   onCancel,
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(name.includes('.') ? false : true);
   const { formatMessage } = useIntl();
   const { getComponentLayout } = useContentTypeLayout();
   const { modifiedData } = useCMEditViewDataManager();
